@@ -1,12 +1,18 @@
-package br.com.fiap.projetodbe.controlles;
+package br.com.fiap.projetodbe.controllers;
 
-@Controller
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.fiap.projetodbe.models.Feed;
+
+@RestController
 public class FeedController {
 
-    @RequestMapping("/api/feed")
-    @ResponseBody
-    public String show(){
-        return "Feed"
+    @GetMapping("/api/feed")
+    public Feed show() {
+        return new Feed( "titulo", "descricao", "img");
     }
 
 }
