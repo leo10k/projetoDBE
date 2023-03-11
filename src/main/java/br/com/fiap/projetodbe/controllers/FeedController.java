@@ -12,7 +12,7 @@ public class FeedController {
 
     @GetMapping("/api/feed")
     public Feed show() {
-        return new Feed( "titulo", "descricao", "img");
+        return new Feed( "5k", "primeira semane de jogo e fiz um ace", "video.mp4");
     }
 
 }
