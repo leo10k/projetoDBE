@@ -2,21 +2,21 @@ package br.com.fiap.projetodbe.models;
 
 public class Game {
     
-    private Integer id;
+    private Long id;
     private String nome;
     private String genero;
     
-    public Game(Integer id, String nome, String genero) {
+    public Game(Long id, String nome, String genero) {
         this.id = id;
         this.nome = nome;
         this.genero = genero;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

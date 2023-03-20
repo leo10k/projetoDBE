@@ -2,14 +2,14 @@ package br.com.fiap.projetodbe.models;
 
 public class User {
 
-    private Integer id;
+    private Long id;
     private String nome;
     private String email;
     private String genero;
     private String telefone;
     private String password;
 
-    public User(Integer id, String nome, String email, String genero, String telefone, String password) {
+    public User(Long id, String nome, String email, String genero, String telefone, String password) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -18,11 +18,11 @@ public class User {
         this.password = password;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
