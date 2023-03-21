@@ -1,7 +1,16 @@
 package br.com.fiap.projetodbe.models;
 
-public class User {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name="Usuario")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String email;
@@ -17,6 +26,8 @@ public class User {
         this.telefone = telefone;
         this.password = password;
     }
+
+    public User() {}
 
     public Long getId() {
         return id;

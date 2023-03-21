@@ -1,7 +1,14 @@
 package br.com.fiap.projetodbe.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Game {
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String genero;
@@ -11,6 +18,8 @@ public class Game {
         this.nome = nome;
         this.genero = genero;
     }
+
+    public Game(){}
 
     public Long getId() {
         return id;

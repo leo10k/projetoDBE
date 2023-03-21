@@ -1,10 +1,10 @@
 package br.com.fiap.projetodbe.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,69 +13,70 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.projetodbe.models.User;
+import br.com.fiap.projetodbe.repository.UserRepository;
 
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
 
     Logger log = LoggerFactory.getLogger(UserController.class);
 
-    List<User> users = new ArrayList<>();
+    @Autowired
+    UserRepository repository;
     
-    @GetMapping("api/users")
+    @GetMapping
     public List<User> index(){
-        return users;        
+        return repository.findAll();        
     }
 
-    @PostMapping("/api/users")
+    @PostMapping
     public ResponseEntity<User> create(@RequestBody User user){
         log.info("cadastrando o usuario: " + user);
-        user.setId(users.size() + 1l);
-        users.add(user);
+        
+        repository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @GetMapping("/api/users/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<User> show(@PathVariable Long id){
         log.info("buscando usuario com id: " + id );
-        var userEncontrado = users.stream().filter(u -> u.getId().equals(id)).findFirst();
+        var userEncontrado = repository.findById(id);
 
         if (userEncontrado.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(userEncontrado.get());
     }
 
-    @DeleteMapping("/api/users/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<User> destroy(@PathVariable Long id){
         log.info("apagando usuario com id " + id);
-        var userEncontrado = users.stream().filter(u -> u.getId().equals(id)).findFirst();
+        var userEncontrado = repository.findById(id);
 
         if (userEncontrado.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
 
-        users.remove(userEncontrado.get());
+        repository.delete(userEncontrado.get());
         
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/api/users/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user){
         log.info("alterando usuario com id " + id);
-        var userEncontrado = users.stream().filter(u -> u.getId().equals(id)).findFirst();
+        var userEncontrado = repository.findById(id);
 
         if (userEncontrado.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.notFound().build();
 
-        users.remove(userEncontrado.get());
         user.setId(id);
-        users.add(user);
+        repository.save(user);
         
         return ResponseEntity.ok(user);
 
     }
-
-
 }
