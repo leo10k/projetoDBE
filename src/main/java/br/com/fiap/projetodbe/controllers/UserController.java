@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.projetodbe.exception.RestNotFoundException;
 import br.com.fiap.projetodbe.models.User;
 import br.com.fiap.projetodbe.repository.UserRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
@@ -34,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user){
+    public ResponseEntity<Object> create(@RequestBody @Valid User user){
         log.info("cadastrando o usuario: " + user);
         
         repository.save(user);
@@ -44,34 +46,27 @@ public class UserController {
     @GetMapping("{id}")
     public ResponseEntity<User> show(@PathVariable Long id){
         log.info("buscando usuario com id: " + id );
-        var userEncontrado = repository.findById(id);
+        var user = getUser(id);
 
-        if (userEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+        
 
-        return ResponseEntity.ok(userEncontrado.get());
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<User> destroy(@PathVariable Long id){
         log.info("apagando usuario com id " + id);
-        var userEncontrado = repository.findById(id);
+        var user = getUser(id);
 
-        if (userEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        repository.delete(userEncontrado.get());
+        repository.delete(user);
         
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user){
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody @Valid User user){
         log.info("alterando usuario com id " + id);
-        var userEncontrado = repository.findById(id);
-
-        if (userEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+        getUser(id);
 
         user.setId(id);
         repository.save(user);
@@ -79,4 +74,9 @@ public class UserController {
         return ResponseEntity.ok(user);
 
     }
+
+    private User getUser(Long id) {
+        return repository.findById(id).orElseThrow(() -> new RestNotFoundException("user nao encontrado"));
+    }
+
 }

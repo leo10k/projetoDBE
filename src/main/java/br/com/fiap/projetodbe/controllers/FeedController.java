@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.projetodbe.exception.RestNotFoundException;
 import br.com.fiap.projetodbe.models.Feed;
 import br.com.fiap.projetodbe.repository.FeedRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/feeds")
@@ -29,13 +31,15 @@ public class FeedController {
     FeedRepository repository; //IoD
 
     @GetMapping
-    public List<Feed> index(){
+    public List<Feed> index() {
         return repository.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<Feed> create(@RequestBody Feed feed) {
-        log.info("cadastrando o usuario: " + feed);
+    public ResponseEntity<Object> create(@RequestBody @Valid Feed feed) {
+        // if(result.hasErrors()) return ResponseEntity.badRequest().body(new
+        // RestValidationError("erro de validação"));
+        log.info("cadastrando o feed: " + feed);
         
         repository.save(feed);
         return ResponseEntity.status(HttpStatus.CREATED).body(feed);
@@ -43,35 +47,28 @@ public class FeedController {
 
     @GetMapping("{id}")
     public ResponseEntity<Feed> show(@PathVariable Long id) {
-        log.info("buscando usuario com id: " + id );
-        var feedEncontrado = repository.findById(id);
+        log.info("buscando feed com id: " + id );
+        var feed = getFeed(id);
 
-        if (feedEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(feedEncontrado.get());
+        return ResponseEntity.ok(feed);
+        
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Feed> destroy(@PathVariable Long id) {
-        log.info("apagando usuario com id " + id);
-        var feedEncontrado = repository.findById(id);
+        log.info("apagando feed com id " + id);
 
-        if (feedEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+        var feed = getFeed(id);
 
-        repository.delete(feedEncontrado.get());
+        repository.delete(feed);
         
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Feed> update(@PathVariable Long id, @RequestBody Feed feed){
-        log.info("alterando usuario com id " + id);
-        var feedEncontrado = repository.findById(id);
-
-        if (feedEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Feed> update(@PathVariable Long id, @RequestBody @Valid Feed feed){
+        log.info("alterando feed com id " + id);
+        getFeed(id);
 
         feed.setId(id);
         repository.save(feed);
@@ -79,4 +76,9 @@ public class FeedController {
         return ResponseEntity.ok(feed);
 
     }
+
+    private Feed getFeed(Long id) {
+        return repository.findById(id).orElseThrow(() -> new RestNotFoundException("feed nao encontrado"));
+    }
+
 }

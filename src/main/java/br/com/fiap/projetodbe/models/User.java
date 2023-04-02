@@ -1,10 +1,14 @@
 package br.com.fiap.projetodbe.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="Usuario")
@@ -12,13 +16,22 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
     private String nome;
+
+    @NotNull
     private String email;
-    private String genero;
+
+    @Enumerated(EnumType.STRING) @NotNull
+    private Genero genero;
+
     private String telefone;
+
+    @NotNull @Size(min = 8, max = 15)
     private String password;
 
-    public User(Long id, String nome, String email, String genero, String telefone, String password) {
+    public User(Long id, String nome, String email, Genero genero, String telefone, String password) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -53,11 +66,11 @@ public class User {
         this.email = email;
     }
 
-    public String getGenero() {
+    public Genero getGenero() {
         return genero;
     }
 
-    public void setGenero(String genero) {
+    public void setGenero(Genero genero) {
         this.genero = genero;
     }
 

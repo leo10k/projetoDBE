@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.fiap.projetodbe.exception.RestNotFoundException;
 import br.com.fiap.projetodbe.models.Game;
 import br.com.fiap.projetodbe.repository.GameRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/games")
@@ -34,49 +36,47 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<Game> create(@RequestBody Game game) {
-        log.info("cadastrando o usuario: " + game);
+    public ResponseEntity<Object> create(@RequestBody @Valid Game game) {
+        log.info("cadastrando o game: " + game);
 
         repository.save(game);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(game);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Game> show(@PathVariable Long id) {
-        log.info("buscando usuario com id: " + id );
-        var gameEncontrado = repository.findById(id);
+        log.info("buscando game com id: " + id );
+        var game = getGame(id);
 
-        if (gameEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(gameEncontrado.get());
+        return ResponseEntity.ok(game);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Game> destroy(@PathVariable Long id) {
-        log.info("apagando usuario com id " + id);
-        var gameEncontrado = repository.findById(id);
-        if (gameEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+        log.info("apagando game com id " + id);
 
-        repository.delete(gameEncontrado.get());
+        var game = getGame(id);
+    
+        repository.delete(game);
         
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Game> update(@PathVariable Long id, @RequestBody Game game){
-        log.info("alterando usuario com id " + id);
-        var gameEncontrado = repository.findById(id);
-
-        if (gameEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Game> update(@PathVariable Long id, @RequestBody @Valid Game game){
+        log.info("alterando game com id " + id);
+        getGame(id);
 
         game.setId(id);
         repository.save(game);
         
         return ResponseEntity.ok(game);
 
+    }
+
+    private Game getGame(Long id) {
+        return repository.findById(id).orElseThrow(() -> new RestNotFoundException("game nao encontrado"));
     }
 
 }
