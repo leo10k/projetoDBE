@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/games")
 public class GameController {
     
-    Logger log = LoggerFactory.getLogger(UserController.class);
+    Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     GameRepository repository;
@@ -36,30 +36,22 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid Game game) {
+    public ResponseEntity<Game> create(@RequestBody @Valid Game game) {
         log.info("cadastrando o game: " + game);
-
         repository.save(game);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(game);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Game> show(@PathVariable Long id) {
         log.info("buscando game com id: " + id );
-        var game = getGame(id);
-
-        return ResponseEntity.ok(game);
+        return ResponseEntity.ok(getGame(id));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Game> destroy(@PathVariable Long id) {
         log.info("apagando game com id " + id);
-
-        var game = getGame(id);
-    
-        repository.delete(game);
-        
+        repository.delete(getGame(id));
         return ResponseEntity.noContent().build();
     }
 
@@ -67,12 +59,9 @@ public class GameController {
     public ResponseEntity<Game> update(@PathVariable Long id, @RequestBody @Valid Game game){
         log.info("alterando game com id " + id);
         getGame(id);
-
         game.setId(id);
         repository.save(game);
-        
         return ResponseEntity.ok(game);
-
     }
 
     private Game getGame(Long id) {

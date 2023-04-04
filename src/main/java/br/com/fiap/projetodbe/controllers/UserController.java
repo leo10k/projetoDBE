@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/users")
 public class UserController {
 
-    Logger log = LoggerFactory.getLogger(UserController.class);
+    Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     UserRepository repository;
@@ -36,9 +36,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid User user){
+    public ResponseEntity<User> create(@RequestBody @Valid User user){
         log.info("cadastrando o usuario: " + user);
-        
         repository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
@@ -46,20 +45,13 @@ public class UserController {
     @GetMapping("{id}")
     public ResponseEntity<User> show(@PathVariable Long id){
         log.info("buscando usuario com id: " + id );
-        var user = getUser(id);
-
-        
-
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(getUser(id));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<User> destroy(@PathVariable Long id){
         log.info("apagando usuario com id " + id);
-        var user = getUser(id);
-
-        repository.delete(user);
-        
+        repository.delete(getUser(id));
         return ResponseEntity.noContent().build();
     }
 
@@ -67,12 +59,9 @@ public class UserController {
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody @Valid User user){
         log.info("alterando usuario com id " + id);
         getUser(id);
-
         user.setId(id);
         repository.save(user);
-        
         return ResponseEntity.ok(user);
-
     }
 
     private User getUser(Long id) {

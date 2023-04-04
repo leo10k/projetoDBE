@@ -1,18 +1,26 @@
 package br.com.fiap.projetodbe.models;
 
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 
 @Entity
+@Data
+@NoArgsConstructor
 public class Feed{
     
     @Id
@@ -23,67 +31,17 @@ public class Feed{
     @Temporal(TemporalType.DATE)
     Date data;
 
-    @NotBlank
+    @NotBlank @NotNull
     String titulo;
 
     @NotBlank @Size(min = 5, max = 255)
     String descricao;
     String img;
 
-    public Feed(Long id, Date data, String titulo, String descricao, String img) {
-        this.id = id;
-        this.data = data;
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.img = img;
-    }
+    @OneToOne
+    private Game game;
 
-    protected Feed(){}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getData() {
-        return data;
-    }
-
-    public void setData(Date data) {
-        this.data = data;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    @Override
-    public String toString() {
-        return "Feed [id=" + id + ", data=" + data + ", titulo=" + titulo + ", descricao=" + descricao + ", img=" + img
-                + "]";
-    }
+    @ManyToOne
+    private User user;
 
 }

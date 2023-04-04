@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/feeds")
 public class FeedController {
 
-    Logger log = LoggerFactory.getLogger(UserController.class);
+    Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     FeedRepository repository; //IoD
@@ -36,11 +36,8 @@ public class FeedController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid Feed feed) {
-        // if(result.hasErrors()) return ResponseEntity.badRequest().body(new
-        // RestValidationError("erro de validação"));
+    public ResponseEntity<Feed> create(@RequestBody @Valid Feed feed) {
         log.info("cadastrando o feed: " + feed);
-        
         repository.save(feed);
         return ResponseEntity.status(HttpStatus.CREATED).body(feed);
     }
@@ -48,20 +45,13 @@ public class FeedController {
     @GetMapping("{id}")
     public ResponseEntity<Feed> show(@PathVariable Long id) {
         log.info("buscando feed com id: " + id );
-        var feed = getFeed(id);
-
-        return ResponseEntity.ok(feed);
-        
+        return ResponseEntity.ok(getFeed(id));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Feed> destroy(@PathVariable Long id) {
         log.info("apagando feed com id " + id);
-
-        var feed = getFeed(id);
-
-        repository.delete(feed);
-        
+        repository.delete(getFeed(id));  
         return ResponseEntity.noContent().build();
     }
 
@@ -69,12 +59,9 @@ public class FeedController {
     public ResponseEntity<Feed> update(@PathVariable Long id, @RequestBody @Valid Feed feed){
         log.info("alterando feed com id " + id);
         getFeed(id);
-
         feed.setId(id);
         repository.save(feed);
-        
         return ResponseEntity.ok(feed);
-
     }
 
     private Feed getFeed(Long id) {
