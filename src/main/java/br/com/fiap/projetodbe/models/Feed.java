@@ -1,7 +1,6 @@
 package br.com.fiap.projetodbe.models;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +13,8 @@ import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Feed{
     
     @Id
@@ -29,7 +32,7 @@ public class Feed{
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    Date data;
+    LocalDate data;
 
     @NotBlank @NotNull
     String titulo;
