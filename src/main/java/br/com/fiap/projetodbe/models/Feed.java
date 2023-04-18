@@ -2,6 +2,10 @@ package br.com.fiap.projetodbe.models;
 
 import java.time.LocalDate;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+
+import br.com.fiap.projetodbe.controllers.FeedController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 
 @Entity
@@ -24,7 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Feed{
+public class Feed {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,5 +51,15 @@ public class Feed{
 
     @ManyToOne
     private User user;
+
+    public EntityModel<Feed> toEntityModel() {
+        return EntityModel.of(
+            this,
+            linkTo(methodOn(FeedController.class).show(id)).withSelfRel(),
+            linkTo(methodOn(FeedController.class).destroy(id)).withRel("delete"),
+            linkTo(methodOn(FeedController.class).index(null, Pageable.unpaged())).withRel("all"),
+            linkTo(methodOn(FeedController.class).show(this.getUser().getId())).withRel("user")
+            );
+    }
 
 }

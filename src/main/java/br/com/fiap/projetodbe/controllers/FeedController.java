@@ -1,13 +1,14 @@
 package br.com.fiap.projetodbe.controllers;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,26 +35,32 @@ public class FeedController {
     @Autowired
     FeedRepository feedRepository; //IoD
 
+    @Autowired
+    PagedResourcesAssembler<Object> assembler;
+
     @GetMapping
-    public Page<Feed> index(@RequestParam(required = false) String game, @PageableDefault(size = 5) Pageable pageble) {
-        if (game == null) 
-            return feedRepository.findAll(pageble);
-        
-        return feedRepository.findByGameContaining(game, pageble);
+    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String game, @PageableDefault(size = 5) Pageable pageable) {
+        Page<Feed> feeds = (game == null)? 
+            feedRepository.findAll(pageable):
+            feedRepository.findByGameContaining(game, pageable);
+
+        return assembler.toModel(feeds.map(Feed::toEntityModel)); //reference metohd
     }
     
 
     @PostMapping
-    public ResponseEntity<Feed> create(@RequestBody @Valid Feed feed) {
+    public ResponseEntity<Object> create(@RequestBody @Valid Feed feed) {
         log.info("cadastrando o feed: " + feed);
         feedRepository.save(feed);
-        return ResponseEntity.status(HttpStatus.CREATED).body(feed);
+        return ResponseEntity
+        .created(feed.toEntityModel().getRequiredLink("self").toUri())
+        .body(feed.toEntityModel());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Feed> show(@PathVariable Long id) {
+    public EntityModel<Feed> show(@PathVariable Long id) {
         log.info("buscando feed com id: " + id );
-        return ResponseEntity.ok(getFeed(id));
+        return getFeed(id).toEntityModel();
     }
 
     @DeleteMapping("{id}")
@@ -64,16 +71,15 @@ public class FeedController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Feed> update(@PathVariable Long id, @RequestBody @Valid Feed feed){
+    public EntityModel<Feed> update(@PathVariable Long id, @RequestBody @Valid Feed feed){
         log.info("alterando feed com id " + id);
         getFeed(id);
         feed.setId(id);
         feedRepository.save(feed);
-        return ResponseEntity.ok(feed);
+        return feed.toEntityModel();
     }
 
     private Feed getFeed(Long id) {
         return feedRepository.findById(id).orElseThrow(() -> new RestNotFoundException("feed nao encontrado"));
     }
-
 }

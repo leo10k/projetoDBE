@@ -29,10 +29,10 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email
+    @NotNull @NotBlank
     private String nome;
 
-    @NotNull @NotBlank
+    @Email
     private String email;
 
     @Enumerated(EnumType.STRING) @NotNull
