@@ -46,7 +46,6 @@ public class FeedController {
 
         return assembler.toModel(feeds.map(Feed::toEntityModel)); //reference metohd
     }
-    
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody @Valid Feed feed) {

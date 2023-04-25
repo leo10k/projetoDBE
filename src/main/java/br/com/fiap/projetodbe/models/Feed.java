@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 
 import br.com.fiap.projetodbe.controllers.FeedController;
+import br.com.fiap.projetodbe.controllers.UserController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -57,8 +58,8 @@ public class Feed {
             this,
             linkTo(methodOn(FeedController.class).show(id)).withSelfRel(),
             linkTo(methodOn(FeedController.class).destroy(id)).withRel("delete"),
-            linkTo(methodOn(FeedController.class).index(null, Pageable.unpaged())).withRel("all"),
-            linkTo(methodOn(FeedController.class).show(this.getUser().getId())).withRel("user")
+            linkTo(methodOn(FeedController.class).index(null, Pageable.unpaged())).withRel("all")
+            //linkTo(methodOn(UserController.class).show(this.getUser().getId())).withRel("user")
             );
     }
 

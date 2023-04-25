@@ -1,22 +1,18 @@
 package br.com.fiap.projetodbe.controllers;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.fiap.projetodbe.exception.RestNotFoundException;
+import br.com.fiap.projetodbe.models.Credencial;
 import br.com.fiap.projetodbe.models.User;
 import br.com.fiap.projetodbe.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -29,43 +25,26 @@ public class UserController {
 
     @Autowired
     UserRepository repository;
+
+    @Autowired
+    AuthenticationManager manager;
     
-    @GetMapping
-    public List<User> index(){
-        return repository.findAll();        
-    }
+    @Autowired
+    PasswordEncoder encoder;
 
-    @PostMapping
-    public ResponseEntity<User> create(@RequestBody @Valid User user){
-        log.info("cadastrando o usuario: " + user);
+    @PostMapping("/register")
+    public ResponseEntity<User> registrar(@RequestBody @Valid User user){
+        user.setPassword(encoder.encode(user.getPassword()));
         repository.save(user);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<User> show(@PathVariable Long id){
-        log.info("buscando usuario com id: " + id );
-        return ResponseEntity.ok(getUser(id));
-    }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<User> destroy(@PathVariable Long id){
-        log.info("apagando usuario com id " + id);
-        repository.delete(getUser(id));
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody @Valid User user){
-        log.info("alterando usuario com id " + id);
-        getUser(id);
-        user.setId(id);
-        repository.save(user);
-        return ResponseEntity.ok(user);
-    }
-
-    private User getUser(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RestNotFoundException("user nao encontrado"));
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody @Valid Credencial credencial){
+        manager.authenticate(credencial.toAuthentication());
+        return ResponseEntity.ok().build();
     }
 
 }

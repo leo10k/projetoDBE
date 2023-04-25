@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import br.com.fiap.projetodbe.models.RestValidationError;
 
 
-
 @RestControllerAdvice
 public class RestExceptionHandler {
 
