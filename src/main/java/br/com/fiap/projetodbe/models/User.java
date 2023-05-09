@@ -35,10 +35,10 @@ public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull @NotBlank
+    @NotBlank
     private String name;
 
-    @Email
+    @NotNull @Email
     private String email;
 
     @Enumerated(EnumType.STRING) @NotNull

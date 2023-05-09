@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 
 import br.com.fiap.projetodbe.controllers.FeedController;
-import br.com.fiap.projetodbe.controllers.UserController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
