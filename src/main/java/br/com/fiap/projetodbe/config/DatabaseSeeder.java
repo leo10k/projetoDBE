@@ -35,7 +35,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Game g4 = new Game(4L, "God War", "Action / Adventure");
         gameRepository.saveAll(List.of(g1,g2,g3,g4));
 
-        User u1 = new User(1L, "Pedro", "pedro@gmail.com", Genero.MASCULINO, "11912345678", "pedro12345");
+        User u1 = new User(1L, "Pedro Pedro", "pedro1@gmail.com", Genero.MASCULINO, "11912345678", "pedro12345");
         User u2 = new User(2L, "Joao", "joao@gmail.com", Genero.MASCULINO, "11127481274", "joao12345");
         User u3 = new User(3L, "Rafaela", "rafaela@gmail.com", Genero.FEMININO, "117531723", "rafaela12");
         User u4 = new User(4L, "Monique", "monique@gmail.com", Genero.FEMININO, "11189492873", "monique12345");

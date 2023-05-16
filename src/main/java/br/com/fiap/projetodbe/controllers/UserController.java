@@ -31,12 +31,13 @@ import br.com.fiap.projetodbe.models.Credencial;
 import br.com.fiap.projetodbe.models.User;
 import br.com.fiap.projetodbe.repository.UserRepository;
 import br.com.fiap.projetodbe.service.TokenService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users")
-@Tag(name = "auth")
 public class UserController {
 
     Logger log = LoggerFactory.getLogger(getClass());
@@ -57,6 +58,13 @@ public class UserController {
     PagedResourcesAssembler<Object> assembler;
 
     @GetMapping
+    @Operation(
+        summary = "User get all",
+        description = "Get all the data of the User's list")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String name, @ParameterObject @PageableDefault(size = 5) Pageable pageable) {
         Page<User> users = (name == null)?       
             useRepository.findAll(pageable): 
@@ -66,6 +74,11 @@ public class UserController {
     }
 
     @PostMapping("/register")
+    @Operation(
+        tags = "auth",
+        summary = "User Register",
+        description = "Register a data of a User"
+    )
     public ResponseEntity<User> registrer(@RequestBody @Valid User user){
         user.setPassword(encoder.encode(user.getPassword()));
         useRepository.save(user);
@@ -74,6 +87,11 @@ public class UserController {
 
     }
 
+    @Operation(
+        tags = "auth",
+        summary = "User Login",
+        description = "Login a data of a User"
+    )
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody @Valid Credencial credencial){
         manager.authenticate(credencial.toAuthentication());
@@ -81,6 +99,13 @@ public class UserController {
         return ResponseEntity.ok(token);
     }
     
+    @Operation(
+        summary = "User Delete by id",
+        description = "Delete by id the User's list")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     @DeleteMapping("{id}")
     public ResponseEntity<User> destroy(@PathVariable Long id){
         log.info("apagando usuario com id " + id);
@@ -88,6 +113,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+        summary = "User Put by id",
+        description = " Update the User id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     @PutMapping("{id}")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody @Valid User user){
         log.info("alterando usuario com id " + id);

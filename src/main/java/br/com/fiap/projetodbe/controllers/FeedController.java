@@ -43,6 +43,13 @@ public class FeedController {
     @Autowired
     PagedResourcesAssembler<Object> assembler;
 
+    @Operation(
+        summary = "Feed get all",
+        description = "Get all the data of the Feed's list")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     @GetMapping
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String game, @ParameterObject @PageableDefault(size = 5) Pageable pageable) {
         Page<Feed> feeds = (game == null)? 
@@ -53,6 +60,9 @@ public class FeedController {
     }
 
     @PostMapping
+    @Operation(
+        summary = "Feed Post",
+        description = "Create a new Feed")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "feed cadastrado com sucesso"),
         @ApiResponse(responseCode = "400", description = "erro na validação dos dados da requisição")})
@@ -69,12 +79,23 @@ public class FeedController {
         summary = "Detalhes do feed",
         description = "Retorna os dados de um feed com id especificado"
     )
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     public EntityModel<Feed> show(@PathVariable Long id) {
         log.info("buscando feed com id: " + id );
         return getFeed(id).toEntityModel();
     }
 
     @DeleteMapping("{id}")
+    @Operation(
+        summary = "Feed Delete by id",
+        description = "Delete by the Feed's id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     public ResponseEntity<Feed> destroy(@PathVariable Long id) {
         log.info("apagando feed com id " + id);
         feedRepository.delete(getFeed(id));  
@@ -82,6 +103,13 @@ public class FeedController {
     }
 
     @PutMapping("{id}")
+    @Operation(
+        summary = "Feed Put by id",
+        description = " Update the Feed id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     public EntityModel<Feed> update(@PathVariable Long id, @RequestBody @Valid Feed feed){
         log.info("alterando feed com id " + id);
         getFeed(id);

@@ -43,6 +43,13 @@ public class GameController {
     PagedResourcesAssembler<Object> assembler;
     
     @GetMapping
+    @Operation(
+        summary = "Game get all",
+        description = "Get all the data of the Game's list")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String nome, @ParameterObject @PageableDefault(size = 5) Pageable pageable) {
         Page<Game> games = (nome == null)?       
             gameRepository.findAll(pageable): 
@@ -52,8 +59,11 @@ public class GameController {
     }
 
     @PostMapping
+    @Operation(
+        summary = "Game Post",
+        description = "Create a new Game")
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "game cadastrada com sucesso"),
+        @ApiResponse(responseCode = "201", description = "feed cadastrado com sucesso"),
         @ApiResponse(responseCode = "400", description = "erro na validação dos dados da requisição")})
     public ResponseEntity<Game> create(@RequestBody @Valid Game game) {
         log.info("cadastrando o game: " + game);
@@ -66,12 +76,24 @@ public class GameController {
         summary = "Detalhes do game",
         description = "Retorna os dados de um game com id especificado"
     )
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     public ResponseEntity<Game> show(@PathVariable Long id) {
         log.info("buscando game com id: " + id );
         return ResponseEntity.ok(getGame(id));
     }
 
+
     @DeleteMapping("{id}")
+    @Operation(
+        summary = "Game Delete by id",
+        description = "Delete by the Game's id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     public ResponseEntity<Game> destroy(@PathVariable Long id) {
         log.info("apagando game com id " + id);
         gameRepository.delete(getGame(id));
@@ -79,6 +101,13 @@ public class GameController {
     }
 
     @PutMapping("{id}")
+    @Operation(
+        summary = "Game Put by id",
+        description = " Update the Game id")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Success"),
+        @ApiResponse(responseCode = "400", description = "Invalid fields"),
+    })
     public ResponseEntity<Game> update(@PathVariable Long id, @RequestBody @Valid Game game){
         log.info("alterando game com id " + id);
         getGame(id);

@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.fiap.projetodbe.controllers.UserController;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -42,6 +43,7 @@ public class User implements UserDetails {
     @NotBlank
     private String name;
 
+    @Column(unique = true)
     @NotNull @Email
     private String email;
 
