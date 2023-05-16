@@ -3,10 +3,13 @@ package br.com.fiap.projetodbe.models;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.fiap.projetodbe.controllers.UserController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,6 +25,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 
 @Data
@@ -81,6 +85,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public EntityModel<User> toEntityModel() {
+        return EntityModel.of(
+            this,
+            linkTo(methodOn(UserController.class).destroy(id)).withRel("delete"),
+            linkTo(methodOn(UserController.class).index(null, Pageable.unpaged())).withRel("all")
+            );
     }
 
 }

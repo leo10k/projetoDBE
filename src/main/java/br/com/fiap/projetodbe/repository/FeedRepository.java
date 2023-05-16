@@ -8,7 +8,7 @@ import br.com.fiap.projetodbe.models.Feed;
 
 public interface FeedRepository extends JpaRepository<Feed, Long> {
 
-    Page<Feed> findByGameContaining(String game, Pageable pageble);
+    Page<Feed> findByGameContaining(String game, Pageable pageable);
     
     //List<Feed> findByDate(LocalDate data);
 

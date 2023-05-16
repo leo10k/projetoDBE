@@ -20,13 +20,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springdoc.core.annotations.ParameterObject;
 import br.com.fiap.projetodbe.exception.RestNotFoundException;
 import br.com.fiap.projetodbe.models.Feed;
 import br.com.fiap.projetodbe.repository.FeedRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/feeds")
+@SecurityRequirement(name = "bearer-key")
 public class FeedController {
 
     Logger log = LoggerFactory.getLogger(getClass());
@@ -38,7 +44,7 @@ public class FeedController {
     PagedResourcesAssembler<Object> assembler;
 
     @GetMapping
-    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String game, @PageableDefault(size = 5) Pageable pageable) {
+    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String game, @ParameterObject @PageableDefault(size = 5) Pageable pageable) {
         Page<Feed> feeds = (game == null)? 
             feedRepository.findAll(pageable):
             feedRepository.findByGameContaining(game, pageable);
@@ -47,6 +53,9 @@ public class FeedController {
     }
 
     @PostMapping
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "feed cadastrado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "erro na validação dos dados da requisição")})
     public ResponseEntity<Object> create(@RequestBody @Valid Feed feed) {
         log.info("cadastrando o feed: " + feed);
         feedRepository.save(feed);
@@ -56,6 +65,10 @@ public class FeedController {
     }
 
     @GetMapping("{id}")
+    @Operation(
+        summary = "Detalhes do feed",
+        description = "Retorna os dados de um feed com id especificado"
+    )
     public EntityModel<Feed> show(@PathVariable Long id) {
         log.info("buscando feed com id: " + id );
         return getFeed(id).toEntityModel();

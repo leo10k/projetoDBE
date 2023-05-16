@@ -1,5 +1,9 @@
 package br.com.fiap.projetodbe.models;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+
+import br.com.fiap.projetodbe.controllers.GameController;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @Data
 @EqualsAndHashCode(of = "id")
@@ -27,5 +32,14 @@ public class Game {
     
     @NotNull @NotBlank
     private String genero;
+
+    public EntityModel<Game> toEntityModel() {
+        return EntityModel.of(
+            this,
+            linkTo(methodOn(GameController.class).show(id)).withSelfRel(),
+            linkTo(methodOn(GameController.class).destroy(id)).withRel("delete"),
+            linkTo(methodOn(GameController.class).index(null, Pageable.unpaged())).withRel("all")
+            );
+    }
     
 }
