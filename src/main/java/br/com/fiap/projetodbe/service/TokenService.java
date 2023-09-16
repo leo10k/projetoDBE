@@ -1,19 +1,17 @@
 package br.com.fiap.projetodbe.service;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-
 import br.com.fiap.projetodbe.models.Credencial;
 import br.com.fiap.projetodbe.models.Token;
 import br.com.fiap.projetodbe.models.User;
 import br.com.fiap.projetodbe.repository.UserRepository;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class TokenService {
@@ -24,7 +22,7 @@ public class TokenService {
     @Value("${jwt.secret}")
     String secret;
 
-    public Token generateToken( Credencial credencial) {
+    public Token generateToken( Credencial credencial, Long userId) {
         Algorithm alg = Algorithm.HMAC256(secret);
         var token = JWT.create()
                     .withSubject(credencial.email())
@@ -32,7 +30,7 @@ public class TokenService {
                     .withIssuer("projetoDBE")
                     .sign(alg);
 
-        return new Token(token, "JWT", "Bearer");
+        return new Token(token, "JWT", "Bearer", userId);
     }
 
     public User valideAndGetUserBy(String token) {
