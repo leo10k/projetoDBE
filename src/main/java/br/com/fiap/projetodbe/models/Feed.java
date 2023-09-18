@@ -39,7 +39,7 @@ public class Feed {
     String descricao;
     String img;
 
-    @OneToOne
+    @ManyToOne(optional = true)
     private Game game;
 
     @ManyToOne

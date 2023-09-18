@@ -1,21 +1,17 @@
 package br.com.fiap.projetodbe.models;
 
+import br.com.fiap.projetodbe.controllers.GameController;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 
-import br.com.fiap.projetodbe.controllers.GameController;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Data
 @EqualsAndHashCode(of = "id")
@@ -32,6 +28,9 @@ public class Game {
     
     @NotNull @NotBlank
     private String genero;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Feed> feeds;
 
     public EntityModel<Game> toEntityModel() {
         return EntityModel.of(

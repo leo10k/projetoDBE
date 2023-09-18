@@ -1,12 +1,5 @@
 package br.com.fiap.projetodbe.config;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
-
 import br.com.fiap.projetodbe.models.Feed;
 import br.com.fiap.projetodbe.models.Game;
 import br.com.fiap.projetodbe.models.Genero;
@@ -14,6 +7,12 @@ import br.com.fiap.projetodbe.models.User;
 import br.com.fiap.projetodbe.repository.FeedRepository;
 import br.com.fiap.projetodbe.repository.GameRepository;
 import br.com.fiap.projetodbe.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Configuration
 public class DatabaseSeeder implements CommandLineRunner {
@@ -29,10 +28,10 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Game g1 = new Game(1L, "Counter-Strike:Global-Ofenssive", "fps");
-        Game g2 = new Game(2L, "Sekiro", "Souls like");
-        Game g3 = new Game(3L, "Elden Ring", "Souls like");
-        Game g4 = new Game(4L, "God War", "Action / Adventure");
+        Game g1 = new Game(1L, "Counter-Strike:Global-Ofenssive", "fps", null);
+        Game g2 = new Game(2L, "Sekiro", "Souls like", null);
+        Game g3 = new Game(3L, "Elden Ring", "Souls like", null);
+        Game g4 = new Game(4L, "God War", "Action / Adventure", null);
         gameRepository.saveAll(List.of(g1,g2,g3,g4));
 
         User u1 = new User(1L, "Pedro Pedro", "pedro1@gmail.com", Genero.MASCULINO, "11912345678", "pedro12345");
