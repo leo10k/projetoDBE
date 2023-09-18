@@ -88,7 +88,12 @@ public class UserController {
         var token = tokenService.generateToken(credencial, user.getId());
         return ResponseEntity.ok(token);
     }
-    
+    @GetMapping("{id}")
+    public ResponseEntity<User> getById(@PathVariable Long id) {
+        log.info("buscando usuario com id: " + id );
+        return ResponseEntity.ok(getUser(id));
+    }
+
     @Operation(
         summary = "User Delete by id",
         description = "Delete by id the User's list")
