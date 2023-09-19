@@ -83,7 +83,6 @@ public class User implements UserDetails {
     public EntityModel<User> toEntityModel() {
         return EntityModel.of(
             this,
-            linkTo(methodOn(UserController.class).destroy(id)).withRel("delete"),
             linkTo(methodOn(UserController.class).index(null, Pageable.unpaged())).withRel("all")
             );
     }

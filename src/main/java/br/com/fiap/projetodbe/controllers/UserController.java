@@ -54,7 +54,7 @@ public class UserController {
         @ApiResponse(responseCode = "201", description = "Success"),
         @ApiResponse(responseCode = "400", description = "Invalid fields"),
     })
-    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String name, @ParameterObject @PageableDefault(size = 5) Pageable pageable) {
+    public PagedModel<EntityModel<Object>> index(@RequestParam(required = false) String name, @ParameterObject @PageableDefault(size = 25) Pageable pageable) {
         Page<User> users = (name == null)?       
             useRepository.findAll(pageable): 
             useRepository.findByNameContaining(name, pageable);

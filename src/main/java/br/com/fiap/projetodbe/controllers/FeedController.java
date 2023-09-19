@@ -53,13 +53,14 @@ public class FeedController {
 //        return assembler.toModel(feeds.map(Feed::toEntityModel)); //reference metohd
 //    }
 
-    @PostMapping
+
     @Operation(
         summary = "Feed Post",
         description = "Create a new Feed")
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "feed cadastrado com sucesso"),
         @ApiResponse(responseCode = "400", description = "erro na validação dos dados da requisição")})
+    @PostMapping
     public ResponseEntity<Object> create(@RequestBody @Valid Feed feed) {
         log.info("cadastrando o feed: " + feed);
         feedRepository.save(feed);

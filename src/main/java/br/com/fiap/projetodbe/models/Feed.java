@@ -39,7 +39,8 @@ public class Feed {
     String descricao;
     String img;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
+    @JoinColumn(name = "game_id")
     private Game game;
 
     @ManyToOne

@@ -1,6 +1,7 @@
 package br.com.fiap.projetodbe.models;
 
 import br.com.fiap.projetodbe.controllers.GameController;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +30,8 @@ public class Game {
     @NotNull @NotBlank
     private String genero;
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Feed> feeds;
 
     public EntityModel<Game> toEntityModel() {
